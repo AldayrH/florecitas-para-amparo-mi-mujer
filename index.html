@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campo de Flores para Amparo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Montserrat:wght@300&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Cormorant Garamond', serif;
+      position: relative;
+      color: #5a3a00;
+      cursor: default;
+    }
+
+    /* Cielo */
+    .sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to bottom, #a8d8ff, #d0f0ff);
+      z-index: 1;
+    }
+
+    /* Sol */
+    .sun {
+      position: absolute;
+      top: 60px;
+      right: 80px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, #fff9b0, #ffd54f, #ffab00);
+      border-radius: 50%;
+      box-shadow: 0 0 60px 20px rgba(255, 213, 79, 0.6);
+      z-index: 2;
+    }
+
+    /* Campo */
+    .field {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 45%;
+      background: linear-gradient(to top, #388e3c, #4caf50, #66bb6a);
+      z-index: 3;
+      overflow: hidden;
+    }
+
+    /* Hierba animada */
+    .grass {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 4;
+    }
+
+    .blade {
+      width: 4px;
+      height: 60px;
+      background: linear-gradient(to top, #1b5e20, #4caf50);
+      border-radius: 0 0 2px 2px;
+      transform-origin: bottom center;
+      animation: swayGrass 6s infinite ease-in-out;
+    }
+
+    .blade:nth-child(2n) { animation-delay: 0.5s; height: 70px; }
+    .blade:nth-child(3n) { animation-delay: 1.2s; height: 50px; }
+    .blade:nth-child(5n) { animation-delay: 2s; height: 80px; }
+
+    @keyframes swayGrass {
+      0%, 100% { transform: rotate(2deg); }
+      50% { transform: rotate(-3deg); }
+    }
+
+    /* Mensaje arriba del campo */
+    .mensaje {
+      position: absolute;
+      top: 120px;
+      width: 100%;
+      text-align: center;
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-weight: 600;
+      color: #d46b4d;
+      text-shadow: 
+        0 2px 4px rgba(255,255,255,0.8),
+        0 0 10px rgba(255,255,255,0.6);
+      z-index: 10;
+      animation: floatText 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .mensaje span {
+      color: #e91e63;
+      display: inline-block;
+      animation: pulseHeart 2s infinite;
+    }
+
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes pulseHeart {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+    }
+
+    /* Contenedor de flores (más abajo, sobre el campo) */
+    .bouquet {
+      position: absolute;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 520px;
+      height: 500px;
+      z-index: 6;
+      animation: gentleSway 14s infinite ease-in-out;
+    }
+
+    @keyframes gentleSway {
+      0%, 100% { transform: translateX(-50%) rotate(-5deg); }
+      25% { transform: translateX(-50%) rotate(-7deg); }
+      50% { transform: translateX(-50%) rotate(-3deg); }
+      75% { transform: translateX(-50%) rotate(-6deg); }
+    }
+
+    /* Estilos de flores, tallos, etc. (igual que antes, pero adaptados) */
+    .stem {
+      position: absolute;
+      bottom: 0;
+      width: 10px;
+      background: linear-gradient(to right, #3e8e41, #2e7d32, #1b5e20);
+      border-radius: 5px;
+      box-shadow: inset -2px 0 4px rgba(0,0,0,0.2);
+      transform-origin: bottom center;
+    }
+
+    .flower {
+      position: absolute;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+    }
+
+    .petal-group {
+      position: relative;
+      width: 130px;
+      height: 130px;
+    }
+
+    .petal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50% 40% 50% 60%;
+      transform-origin: bottom center;
+      opacity: 0.95;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .center {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle, #f9a825, #ff8f00, #e65100);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 3px 8px rgba(0,0,0,0.2);
+      border: 1px solid #d84315;
+    }
+
+    .leaf {
+      position: absolute;
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      border-radius: 0 70% 30% 70%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform-origin: bottom center;
+    }
+
+    .vein {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.08);
+      border-radius: 10px;
+    }
+
+    .butterfly {
+      position: absolute;
+      width: 24px;
+      height: 20px;
+      z-index: 7;
+      animation: flutter 10s infinite ease-in-out;
+    }
+
+    .wing {
+      position: absolute;
+      width: 12px;
+      height: 16px;
+      background: linear-gradient(to bottom, #ff9e80, #ff5722);
+      border-radius: 50% 50% 0 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .wing.left { left: 0; transform: rotate(-20deg); }
+    .wing.right { right: 0; transform: rotate(20deg); }
+
+    @keyframes flutter {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-30px, -40px) rotate(-10deg); }
+      50% { transform: translate(15px, -60px) rotate(5deg); }
+      75% { transform: translate(-20px, -25px) rotate(-5deg); }
+    }
+
+    .bee {
+      position: absolute;
+      width: 20px;
+      height: 12px;
+      background: linear-gradient(to right, #fbc02d, #f57c00, #fbc02d);
+      border-radius: 50%;
+      z-index: 7;
+      animation: buzz 12s infinite linear;
+    }
+
+    .bee::before, .bee::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 14px;
+      background: #333;
+      border-radius: 2px;
+      top: -1px;
+    }
+
+    .bee::before { left: 4px; }
+    .bee::after { right: 4px; }
+
+    @keyframes buzz {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(50px, -30px) rotate(10deg); }
+      50% { transform: translate(100px, -15px) rotate(-5deg); }
+      75% { transform: translate(50px, 15px) rotate(8deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .dew {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, white, rgba(255,255,255,0.7), transparent);
+      border-radius: 50%;
+      box-shadow: 0 0 6px 2px rgba(255,255,255,0.8);
+      z-index: 8;
+    }
+
+    .pollen {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #ffd54f;
+      border-radius: 50%;
+      box-shadow: 0 0 8px 2px rgba(255, 213, 79, 0.7);
+      animation: floatPollen 15s infinite ease-in-out;
+      opacity: 0;
+      z-index: 5;
+    }
+
+    @keyframes floatPollen {
+      0% { transform: translate(0, 0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+    }
+
+    /* --- Mensaje desplegable --- */
+    #messageOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(245, 255, 245, 0.94);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    #messageOverlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .message-card {
+      background: white;
+      width: 90%;
+      max-width: 600px;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.5s ease;
+    }
+
+    #messageOverlay.active .message-card {
+      transform: translateY(0);
+    }
+
+    .message-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      color: #d46b4d;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .message-card p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: #4a4a4a;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .close-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 24px;
+      background: #f9a825;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #ff8f00;
+    }
+
+    .message-card::before {
+      content: '♡';
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.4rem;
+      color: #e91e63;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <!-- Cielo y sol -->
+  <div class="sky"></div>
+  <div class="sun"></div>
+
+  <!-- Mensaje arriba -->
+  <div class="mensaje">Para ti, Amparo <span>♡</span></div>
+
+  <!-- Campo y hierba -->
+  <div class="field">
+    <div class="grass" id="grass"></div>
+  </div>
+
+  <!-- Ramo de flores (más abajo) -->
+  <div class="bouquet" id="bouquet"></div>
+
+  <!-- Overlay del mensaje -->
+  <div id="messageOverlay">
+    <div class="message-card">
+      <h2>Querida Amparo,</h2>
+      <p>
+        En este campo donde el viento canta y las flores susurran tu nombre,  
+        cada pétalo es un "gracias", cada hoja un "te quiero".
+        <br><br>
+        Que este rincón de naturaleza te recuerde cuánto brillas,  
+        cuánto das, y cuánto mereces ser amada.
+        <br><br>
+        Con todo mi cariño,
+        <br>
+        <strong>— Alguien que te lleva en el corazón</strong>
+      </p>
+      <button class="close-btn">Cerrar con cariño</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Generar hierba ---
+    const grassContainer = document.getElementById('grass');
+    for (let i = 0; i < 80; i++) {
+      const blade = document.createElement('div');
+      blade.className = 'blade';
+      blade.style.left = `${i * 1.25}%`;
+      blade.style.animationDelay = `${Math.random() * 3}s`;
+      grassContainer.appendChild(blade);
+    }
+
+    // --- Configuración del ramo ---
+    const bouquet = document.getElementById('bouquet');
+    const overlay = document.getElementById('messageOverlay');
+    const closeBtn = document.querySelector('.close-btn');
+
+    bouquet.addEventListener('click', (e) => {
+      e.stopPropagation();
+      overlay.classList.add('active');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('active');
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        overlay.classList.remove('active');
+      }
+    });
+
+    // --- Datos del ramo ---
+    const petalColors = [
+      ['#fff9b0', '#FFD700', '#FFA500'],
+      ['#ffe082', '#ffb300', '#f57c00'],
+      ['#fff176', '#fdd835', '#ff8f00'],
+      ['#ffecb3', '#ffb300', '#e65100'],
+      ['#fff59d', '#ffca28', '#ff6f00'],
+      ['#fff8e1', '#ffcc80', '#ff5722'],
+      ['#fff3e0', '#ffab91', '#f44336']
+    ];
+
+    const flowerData = [
+      { x: 100, y: 80, angle: 15, size: 1, color: 0 },
+      { x: 150, y: 65, angle: -10, size: 0.95, color: 1 },
+      { x: 200, y: 95, angle: 25, size: 1.05, color: 2 },
+      { x: 250, y: 105, angle: -20, size: 0.9, color: 3 },
+      { x: 300, y: 75, angle: 18, size: 1.1, color: 4 },
+      { x: 125, y: 120, angle: -5, size: 0.98, color: 5 },
+      { x: 225, y: 110, angle: 12, size: 1.02, color: 6 }
+    ];
+
+    const stemData = [
+      { h: 320, x: 160, angle: -8 },
+      { h: 300, x: 175, angle: -2 },
+      { h: 330, x: 190, angle: 4 },
+      { h: 290, x: 205, angle: 8 },
+      { h: 315, x: 220, angle: -6 },
+      { h: 305, x: 180, angle: 2 },
+      { h: 295, x: 215, angle: -4 }
+    ];
+
+    const leafData = [
+      { w: 50, h: 85, x: 110, y: 180, angle: -30 },
+      { w: 45, h: 75, x: 260, y: 160, angle: 40 },
+      { w: 55, h: 90, x: 180, y: 200, angle: 20 },
+      { w: 40, h: 70, x: 230, y: 140, angle: -15 },
+      { w: 60, h: 100, x: 150, y: 120, angle: -10 }
+    ];
+
+    // Crear tallos
+    stemData.forEach(stem => {
+      const el = document.createElement('div');
+      el.className = 'stem';
+      el.style.height = `${stem.h}px`;
+      el.style.left = `${stem.x}px`;
+      el.style.transform = `rotate(${stem.angle}deg)`;
+      bouquet.appendChild(el);
+    });
+
+    // Crear flores
+    flowerData.forEach((f, i) => {
+      const flower = document.createElement('div');
+      flower.className = 'flower';
+      flower.style.left = `${f.x}px`;
+      flower.style.top = `${f.y}px`;
+      flower.style.transform = `rotate(${f.angle}deg) scale(${f.size})`;
+      flower.style.animation = `breathe 8s infinite ease-in-out`;
+      flower.style.animationDelay = `${i * 0.3}s`;
+
+      const group = document.createElement('div');
+      group.className = 'petal-group';
+
+      const colors = petalColors[f.color];
+      for (let j = 0; j < 7; j++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
+        const hueShift = (Math.random() - 0.5) * 10;
+        petal.style.background = `radial-gradient(circle at top, ${colors[0]}, ${colors[1]} ${30 + hueShift}%, ${colors[2]} ${60 + hueShift}%)`;
+        petal.style.width = `${36 + Math.random() * 6}px`;
+        petal.style.height = `${52 + Math.random() * 8}px`;
+        petal.style.borderRadius = `${60 + Math.random() * 10}% ${40 - Math.random() * 10}% ${60 + Math.random() * 10}% ${40 - Math.random() * 10}%`;
+        petal.style.transform = `translate(-50%, -50%) rotate(${j * 51.4}deg) translateY(-38px)`;
+        petal.style.opacity = `${0.92 + Math.random() * 0.08}`;
+        group.appendChild(petal);
+      }
+
+      const center = document.createElement('div');
+      center.className = 'center';
+      group.appendChild(center);
+
+      flower.appendChild(group);
+      bouquet.appendChild(flower);
+
+      if (i % 2 === 0) {
+        const dew = document.createElement('div');
+        dew.className = 'dew';
+        dew.style.left = `${f.x + 60 + Math.random() * 20}px`;
+        dew.style.top = `${f.y + 20 + Math.random() * 20}px`;
+        bouquet.appendChild(dew);
+      }
+    });
+
+    // Hojas
+    leafData.forEach(leaf => {
+      const el = document.createElement('div');
+      el.className = 'leaf';
+      el.style.width = `${leaf.w}px`;
+      el.style.height = `${leaf.h}px`;
+      el.style.left = `${leaf.x}px`;
+      el.style.bottom = `${leaf.y}px`;
+      el.style.transform = `rotate(${leaf.angle}deg)`;
+      bouquet.appendChild(el);
+
+      for (let v = 0; v < 3; v++) {
+        const vein = document.createElement('div');
+        vein.className = 'vein';
+        vein.style.width = `${leaf.w * 0.6}px`;
+        vein.style.height = `${2 + Math.random() * 2}px`;
+        vein.style.left = `${leaf.w * 0.2}px`;
+        vein.style.top = `${leaf.h * (0.3 + v * 0.2)}px`;
+        vein.style.transform = `rotate(${leaf.angle * 0.3}deg)`;
+        el.appendChild(vein);
+      }
+    });
+
+    // Mariposa y abeja (posición relativa al cuerpo)
+    const butterfly = document.createElement('div');
+    butterfly.className = 'butterfly';
+    butterfly.innerHTML = '<div class="wing left"></div><div class="wing right"></div>';
+    butterfly.style.left = '65%';
+    butterfly.style.top = '40%';
+    document.body.appendChild(butterfly);
+
+    const bee = document.createElement('div');
+    bee.className = 'bee';
+    bee.style.left = '35%';
+    bee.style.top = '45%';
+    document.body.appendChild(bee);
+
+    // Polen flotante
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'pollen';
+      const dx = (Math.random() - 0.5) * 400;
+      const dy = (Math.random() - 0.5) * 200 - 150;
+      p.style.setProperty('--dx', `${dx}px`);
+      p.style.setProperty('--dy', `${dy}px`);
+      p.style.left = `${20 + Math.random() * 60}%`;
+      p.style.top = `${30 + Math.random() * 30}%`;
+      p.style.animationDelay = `${Math.random() * 6}s`;
+      document.body.appendChild(p);
+    }
+
+    // Animación de respiración
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes breathe {
+        0%, 100% { transform: rotate(var(--r)) scale(var(--s)); }
+        50% { transform: rotate(var(--r)) scale(calc(var(--s) * 1.04)); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.querySelectorAll('.flower').forEach((f, i) => {
+      f.style.setProperty('--r', `${flowerData[i].angle}deg`);
+      f.style.setProperty('--s', flowerData[i].size);
+    });
+  </script>
+</body>
+</html>
